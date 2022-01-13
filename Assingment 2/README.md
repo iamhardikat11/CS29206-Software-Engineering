@@ -1,4 +1,6 @@
-Indian Institute of Technology, Kharagpur Department of Computer Science and Engineering Software Engineering (CS 29006/CS29202), Spring 2022
+# Indian Institute of Technology
+## Kharagpur Department of Computer Science and Engineering 
+### Software Engineering (CS 29006/CS29202), Spring 2022
 Assignment 2 – C++ Programming
 1. Zero marks for a submission if it does not pass the plagiarism test. 2. Break-up of Credits will be as follows:
 (a) Percentage of features implemented: 70%
