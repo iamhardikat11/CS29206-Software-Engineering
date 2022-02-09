@@ -91,10 +91,13 @@ public:
     }
 
     ProductItem &operator=(ProductItem &pi) {
-        this->title = pi.title;
-        this->id = pi.id;
-        this->copies = pi.copies;
-        this->price = pi.price;
+        if(this != &pi)
+        {
+            this->title = pi.title;
+            this->id = pi.id;
+            this->copies = pi.copies;
+            this->price = pi.price;
+        }
         return *this;
     }
 };
@@ -153,71 +156,77 @@ public:
 
     Order &operator=(Order &o)
     {
-        this->id = o.id;
-        this->c = o.c;
-        this->prods = o.prods;
+        if(this != &o)
+        {
+            this->id = o.id;
+            this->c = o.c;
+            this->prods = o.prods;
+        }
         return *this;
     }
 };
 class ShoppingBasket
 {
-    size_t id;
-    static size_t NumBasket;
-    Customer c;
-    list<Order> orders;
+     size_t id;
+     static size_t NumBasket;
+     Customer c;
+     list<Order> orders;
 
-public:
-    ShoppingBasket(Customer &in_c)
-    {
-        this->id = ++NumBasket;
-        this->c = in_c;
-    }
-    ~ShoppingBasket()
-    {
-        this->id = -1;
-        this->c.~Customer();
-        this->orders.clear();
-    }
-    friend ostream &operator<<(ostream &os, const ShoppingBasket &sb)
-    {
-        cout << "** Shopping Basket **" << std::endl;
-        os << sb.c;
-        cout << "Shopping Basket ID: ";
-        os << sb.id;
-        cout << " Order Size: " << sb.orders.size() << std::endl;
-        for(auto it=sb.orders.begin();it != sb.orders.end();it++)
-            cout << it.operator*();
-        cout << std::endl;
-        return os;
-    }
-    friend istream &operator>>(istream &is, ShoppingBasket &sb)
-    {
-        cout << "** Shopping Basket **" << std::endl;
-        cout << "ID: ";
-        is >> sb.id;
-        is >> sb.c;
-        return is;
-    }
-    ShoppingBasket &operator+(Order &p)
-    {
+ public:
+     ShoppingBasket(Customer &in_c)
+     {
+         this->id = ++NumBasket;
+         this->c = in_c;
+     }
+     ~ShoppingBasket()
+     {
+         this->id = -1;
+         this->c.~Customer();
+         this->orders.clear();
+     }
+     friend ostream &operator<<(ostream &os, const ShoppingBasket &sb)
+     {
+         cout << "** Shopping Basket **" << std::endl;
+         os << sb.c;
+         cout << "Shopping Basket ID: ";
+         os << sb.id;
+         cout << " Order Size: " << sb.orders.size() << std::endl;
+         for(auto it=sb.orders.begin();it != sb.orders.end();it++)
+             cout << it.operator*();
+         cout << std::endl;
+         return os;
+     }
+     friend istream &operator>>(istream &is, ShoppingBasket &sb)
+     {
+         cout << "** Shopping Basket **" << std::endl;
+         cout << "ID: ";
+         is >> sb.id;
+         is >> sb.c;
+         return is;
+     }
+     ShoppingBasket &operator+(Order &p)
+     {
         this->orders.push_back(p);
         return *this;
-    }
-    ShoppingBasket &operator-(int orderid)
-    {
-        this->orders.remove_if([&orderid](Order n){return n.getid()==orderid;});
-        return *this;
-    }
-    ShoppingBasket &operator=(ShoppingBasket &sb)
-    {
-        this->id = sb.id;
-        this->c = sb.c;
-        this->orders.clear();
-        this->orders.assign(sb.orders.begin(),sb.orders.end());
-        return *this;
-    }
+     }
+     ShoppingBasket &operator-(int orderid)
+     {
+         this->orders.remove_if([&orderid](Order n){return n.getid()==orderid;});
+         return *this;
+     }
+     ShoppingBasket &operator=(ShoppingBasket &sb)
+     {
+         if(this != &sb )
+         {
+             this->id = sb.id;
+             this->c = sb.c;
+             this->orders.clear();
+             this->orders.assign(sb.orders.begin(),sb.orders.end());
+         }
+         return *this;
+     }
 
-};
+ };
 
 size_t Customer::NumCustomer = 0;
 size_t ProductItem::NumProductItem = 0;
@@ -237,11 +246,8 @@ int main()
     oref = oref + *p * 10;
     // create a shopping basket
     ShoppingBasket *s = new ShoppingBasket(*c);
-    cout << *s;
     ShoppingBasket &shop = *s;
     shop = shop + oref;
-    cout << *s;
     shop = shop - oref.getid();
-    cout << *s;
     return 0;
 }
